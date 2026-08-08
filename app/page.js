@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 const meetings = [
-  { time: "09:30 AM", title: "Design Review", team: "Team Sync", icon: <img src="https://1000logos.net/wp-content/uploads/2021/12/Google-Meet-Logo-500x281.png"></img>, people: ["SK", "AM"], tone: "green" },
-  { time: "11:00 AM", title: "Product Demo", team: "Acme Corporation", icon: "●", people: ["JM"], tone: "blue" },
-  { time: "02:30 PM", title: "Interview – UX Designer", team: "Hiring Team", icon: "T", people: ["RS"], tone: "purple" },
-  { time: "04:00 PM", title: "Sales Call", team: "Global Solutions", icon: "📹", people: ["AV", "KW"], tone: "green" },
+  { time: "09:30 AM", title: "Design Review", team: "Team Sync", icon: 1, people: ["SK", "AM"], tone: "green" },
+  { time: "11:00 AM", title: "Product Demo", team: "Acme Corporation", icon: 2, people: ["JM"], tone: "blue" },
+  { time: "02:30 PM", title: "Interview – UX Designer", team: "Hiring Team", icon: 3, people: ["RS"], tone: "purple" },
+  { time: "04:00 PM", title: "Sales Call", team: "Global Solutions", icon: 4, people: ["AV", "KW"], tone: "green" },
 ];
 
 const nav = [
