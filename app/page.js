@@ -11,9 +11,9 @@ const meetings = [
 ];
 
 const nav = [
-  ["⌘", "Dashboard"], ["□", "Meetings"], ["▣", "Calendar"], ["◷", "Availability"],
-  ["♧", "Meeting Types"], ["♙", "Contacts"], ["▥", "Analytics"], ["⌘", "Integrations"],
-  ["♙", "Team"], ["▤", "Billing"], ["⚙", "Settings"],
+  [<img src="https://cdn-icons-png.flaticon.com/512/609/609503.png"></img>, "Dashboard"], [<img src="https://cdn-icons-png.flaticon.com/512/1250/1250599.png"></img>, "Meetings"], [<img src="https://cdn-icons-png.flaticon.com/512/1250/1250599.png"></img>, "Calendar"], [<img src="https://cdn-icons-png.flaticon.com/512/2088/2088617.png"></img>, "Availability"],
+  [<img src="https://cdn-icons-png.flaticon.com/512/4557/4557570.png"></img>, "Meeting Types"], [<img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png"></img>, "Contacts"], [<img src="https://cdn-icons-png.flaticon.com/512/4440/4440475.png"></img>, "Analytics"], [<img src="   https://cdn-icons-png.flaticon.com/512/7758/7758132.png "></img>, "Integrations"],
+  [<img src="https://cdn-icons-png.flaticon.com/512/511/511587.png"></img>, "Team"], [<img src="https://cdn-icons-png.flaticon.com/512/4492/4492772.png"></img>, "Billing"], [<img src="https://cdn-icons-png.flaticon.com/512/3524/3524636.png"></img>, "Settings"],
 ];
 
 function prettyTime(dateString) {
@@ -21,7 +21,14 @@ function prettyTime(dateString) {
 }
 
 function EventIcon({ item }) {
-  return <span className={`event-icon ${item.tone || "green"}`}>{item.icon || "●"}</span>;
+  const logoByMeeting = {
+    1: { src: "/googlemeet.png", alt: "Google Meet" },
+    2: { src: "/zoomlogo.png", alt: "Zoom" },
+    3: { src: "/microsoftteeams.png", alt: "Microsoft Teams" },
+    4: { src: "/googlemeet.png", alt: "Google Meet" },
+  };
+  const logo = logoByMeeting[item.icon];
+  return <span className={`event-icon ${item.tone || "green"}`}>{logo ? <img src={logo.src} alt={logo.alt} /> : (item.icon || "●")}</span>;
 }
 
 function Avatar({ name, index = 0 }) {
@@ -53,7 +60,7 @@ function Calendar() {
       const marked = [5, 8, 13, 16, 20, 21, 22, 27, 29].includes(date);
       return <span key={i} className={`${inactive ? "inactive" : ""} ${date === 20 ? "selected" : ""} ${marked ? "marked" : ""}`}>{shown}</span>;
     })}</div>
-    <button className="calendar-link">▣ <span>View full calendar</span></button>
+    <button className="calendar-link"><img src="https://cdn-icons-png.flaticon.com/512/1250/1250599.png"></img> <span>View full calendar</span></button>
   </aside>;
 }
 
@@ -79,13 +86,16 @@ function Dashboard() {
   const name = session?.user?.name?.split(" ")[0] || "Alex";
   return <div className="app-shell">
     <aside className="sidebar">
-      <div className="brand"><span className="brand-icon">✓</span><strong>MeetPlan</strong></div>
+      <div className="brand"><span className="brand-icon"><img src="https://cdn-icons-png.flaticon.com/512/1250/1250599.png"></img></span><strong>MeetPlan</strong></div>
       <nav>{nav.map(([icon, label], index) => <button className={index === 0 ? "active" : ""} key={label}><i>{icon}</i><span>{label}</span></button>)}</nav>
       <div className="upgrade"><div className="upgrade-art"><img src="/image.png" alt="Calendar and plant illustration" /></div><strong>Upgrade to Pro</strong><p>Unlock advanced features and<br />grow your business.</p><button>Upgrade Now</button></div>
       <div className="account"><span className="account-avatar">A</span><div><strong>Account</strong><small>Starter Plan</small></div><span>⌄</span></div>
     </aside>
     <main>
-      <header className="topbar"><label className="search">⌕ <input placeholder="Search meetings, contacts, etc..." /><kbd>⌘ K</kbd></label><div className="header-actions"><button className="connect" onClick={() => connected ? signOut() : signIn("google")}>{connected ? "Disconnect Calendar" : "Connect Google Calendar"}</button><button className="bell">♧<b>3</b></button><span className="profile">{name[0]}<i /></span></div></header>
+      <header className="topbar">
+        <label className="search">⌕ <input placeholder="Search meetings, contacts, etc..." /><kbd>⌘ K</kbd></label>
+        <div className="header-actions"><button className="connect" onClick={() => connected ? signOut() : signIn("google")}>{connected ? "Disconnect Calendar" : "Connect Google Calendar"}</button>
+        <button className="bell"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529521.png"></img><b>3</b></button><span className="profile">{name[0]}<i /></span></div></header>
       <div className="content-grid">
         <div className="center-content">
           <section className="welcome"><div><p>Good Morning,</p><h1>Welcome back! <span>👋</span></h1><small>You have <em>{eventList.length}</em> meetings today.</small></div><div className="city"><img src="/good-morning-city.png" alt="City skyline illustration" /></div></section>
