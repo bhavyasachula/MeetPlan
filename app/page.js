@@ -66,7 +66,7 @@ function Calendar() {
 
 function MeetingTypes() {
   const types = [[<img src="https://cdn-icons-png.flaticon.com/512/5346/5346453.png"></img>, "30 Min Consultation", "30 mins · One-on-One", "green"], [<img src="https://cdn-icons-png.flaticon.com/512/5346/5346453.png"></img> , "60 Min Strategy Call", "60 mins · One-on-One", "orange"], [<img src="https://cdn-icons-png.flaticon.com/512/482/482478.png " ></img>, "Quick Demo", "30 mins · Group", "blue"], [	<img src="https://cdn-icons-png.flaticon.com/512/511/511587.png"></img>, "Interview Session", "45 mins · One-on-One", "pink"]];
-  return <section className="types-section"><div className="section-title"><h2>Your Meeting Types</h2><button>Manage all</button></div><div className="type-grid">{types.map(([icon, title, subtitle, tone]) => <article className="type-card" key={title}><span className={`type-icon ${tone}`}>{icon}</span><strong>{title}</strong><small>{subtitle}</small><footer><button>▱ &nbsp; Copy link</button><button className="dots">⋮</button></footer></article>)}</div></section>;
+  return <section className="types-section"><div className="section-title"><h2>Your Meeting Types</h2><button>Manage all</button></div><div className="type-grid">{types.map(([icon, title, subtitle, tone]) => <article className="type-card" key={title}><span className={`type-icon ${tone}`}>{icon}</span><strong>{title}</strong><small>{subtitle}</small><footer><button><img src="https://cdn-icons-png.flaticon.com/512/126/126498.png"></img>  Copy link</button><button className="dots">⋮</button></footer></article>)}</div></section>;
 }
 
 function Dashboard() {
