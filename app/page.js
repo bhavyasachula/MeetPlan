@@ -28,7 +28,7 @@ function EventIcon({ item }) {
     4: { src: "/googlemeet.png", alt: "Google Meet" },
   };
   const logo = logoByMeeting[item.icon];
-  return <span className={`event-icon ${item.tone || "green"}`}>{logo ? <img src={logo.src} alt={logo.alt} /> : (item.icon || "●")}</span>;
+  return <span className={`event-icon ${item.tone || "green"}`}>{logo ? <img src={logo.src} alt={logo.alt} /> : (<img src="https://cdn-icons-png.flaticon.com/512/511/511587.png"></img>)}</span>;
 }
 
 function Avatar({ name, index = 0 }) {
@@ -38,7 +38,7 @@ function Avatar({ name, index = 0 }) {
 
 function EventRow({ item, dense = false }) {
   return <div className={`event-row ${dense ? "dense" : ""}`}>
-    <div className="event-time"><strong>{item.time}</strong><span>Today</span></div>
+    <div className="event-time"><strong>{item.time}</strong><span>{item.dateLabel || "Today"}</span></div>
     <EventIcon item={item} />
     <div className="event-info"><strong>{item.title}</strong><span>{item.team || "Google Calendar"}</span></div>
     {!dense && <div className="attendees">{(item.people || ["GC"]).slice(0, 2).map((p, index) => <Avatar key={p} name={p} index={index} />)}{(item.people || []).length > 2 && <span className="more-people">+{item.people.length - 2}</span>}</div>}
@@ -73,17 +73,31 @@ function Dashboard() {
   const { data: session, status } = useSession();     
   const [eventList, setEventList] = useState(meetings);
   const [loadingEvents, setLoadingEvents] = useState(false);  
+  const [calendarError, setCalendarError] = useState("");
   const connected = status === "authenticated";
 
   useEffect(() => {
-    if (!connected) return;
+    if (!connected) {
+      setEventList(meetings);
+      setCalendarError("");
+      return;
+    }
     setLoadingEvents(true);
-    fetch("/api/calendar/events").then(r => r.ok ? r.json() : Promise.reject()).then(data => {
-      if (data.events?.length) setEventList(data.events);
-    }).catch(() => { }).finally(() => setLoadingEvents(false));
+    setCalendarError("");
+    fetch("/api/calendar/events").then(async (response) => {
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not load your calendar");
+      return data;
+    }).then((data) => {
+      setEventList(data.events || []);
+    }).catch((error) => {
+      setEventList([]);
+      setCalendarError(error.message);
+    }).finally(() => setLoadingEvents(false));
   }, [connected]);
 
   const name = session?.user?.name?.split(" ")[0] || "Alex";
+  const todayEvents = connected ? eventList.filter((event) => event.isToday) : eventList;
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand"><span className="brand-icon"><img src="https://cdn-icons-png.flaticon.com/512/1250/1250599.png"></img></span><strong>MeetPlan</strong></div>
@@ -98,12 +112,12 @@ function Dashboard() {
         <button className="bell"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529521.png"></img><b>3</b></button><span className="profile">{name[0]}<i /></span></div></header>
       <div className="content-grid">
         <div className="center-content">
-          <section className="welcome"><div><p>Good Morning,</p><h1>Welcome back! <span>👋</span></h1><small>You have <em>{eventList.length}</em> meetings today.</small></div><div className="city"><img src="/good-morning-city.png" alt="City skyline illustration" /></div></section>
+          <section className="welcome"><div><p>Good Morning,</p><h1>Welcome back! <span>👋</span></h1><small>You have <em>{todayEvents.length}</em> meetings today.</small></div><div className="city"><img src="/good-morning-city.png" alt="City skyline illustration" /></div></section>
           <section className="stats">{[[<img src="https://cdn-icons-png.flaticon.com/512/3239/3239948.png"></img>, "Upcoming Meetings", eventList.length, "12%", "green"], [<img src="https://cdn-icons-png.flaticon.com/512/511/511587.png"></img>, "Pending Invitations", "3", "8%", "orange"], [<img src="https://cdn-icons-png.flaticon.com/512/2088/2088617.png"></img>, "Hours Booked", "24.5", "18%", "green"], [<img src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png"></img>, "Revenue", "₹24,680", "15%", "orange"]].map(([icon, label, num, growth, tone]) => <article key={label}><span className={`stat-icon ${tone}`}>{icon}</span><small>{label}</small><strong>{num}</strong><em>↑ {growth} <i>vs {label === "Hours Booked" ? "last week" : label === "Revenue" ? "last month" : "yesterday"}</i></em></article>)}</section>
-          <section className="meetings-section"><div className="section-title"><h2>Upcoming Meetings</h2><button>View all</button></div><div className="meeting-list">{loadingEvents && <p className="loading">Syncing Google Calendar…</p>}{eventList.slice(0, 4).map((item, index) => <EventRow item={item} key={`${item.title}-${index}`} />)}</div></section>
+          <section className="meetings-section"><div className="section-title"><h2>Upcoming Meetings</h2><button>View all</button></div><div className="meeting-list">{loadingEvents && <p className="loading">Syncing Google Calendar…</p>}{calendarError && <p className="calendar-message">{calendarError}</p>}{connected && !loadingEvents && !calendarError && eventList.length === 0 && <p className="calendar-message">No calendar events in the next 7 days.</p>}{eventList.slice(0, 4).map((item, index) => <EventRow item={item} key={`${item.title}-${index}`} />)}</div></section>
           <MeetingTypes />
         </div>
-        <div className="right-content"><Calendar /><section className="schedule"><div className="section-title"><h2>Today’s Schedule</h2><button>See full day</button></div><div className="schedule-list">{eventList.slice(0, 4).map((item, index) => <EventRow item={item} dense key={`${item.title}-${index}`} />)}</div><button className="new-meeting">＋ New Meeting</button></section></div>
+        <div className="right-content"><Calendar /><section className="schedule"><div className="section-title"><h2>Today’s Schedule</h2><button>See full day</button></div><div className="schedule-list">{connected && !loadingEvents && !calendarError && todayEvents.length === 0 && <p className="calendar-message">No meetings today.</p>}{todayEvents.slice(0, 4).map((item, index) => <EventRow item={item} dense key={`${item.title}-${index}`} />)}</div><button className="new-meeting">＋ New Meeting</button></section></div>
       </div>
     </main>
     <nav className="bottom-nav">{nav.slice(0, 5).map(([icon, label], i) => <button key={label} className={i === 0 ? "active" : ""}><i>{icon}</i><span>{label}</span></button>)}</nav>
