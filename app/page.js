@@ -65,14 +65,30 @@ function Calendar() {
 }
 
 function MeetingTypes() {
-  const types = [[<img src="https://cdn-icons-png.flaticon.com/512/5346/5346453.png"></img>, "30 Min Consultation", "30 mins · One-on-One", "green"], [<img src="https://cdn-icons-png.flaticon.com/512/5346/5346453.png"></img> , "60 Min Strategy Call", "60 mins · One-on-One", "orange"], [<img src="https://cdn-icons-png.flaticon.com/512/482/482478.png " ></img>, "Quick Demo", "30 mins · Group", "blue"], [	<img src="https://cdn-icons-png.flaticon.com/512/511/511587.png"></img>, "Interview Session", "45 mins · One-on-One", "pink"]];
-  return <section className="types-section"><div className="section-title"><h2>Your Meeting Types</h2><button>Manage all</button></div><div className="type-grid">{types.map(([icon, title, subtitle, tone]) => <article className="type-card" key={title}><span className={`type-icon ${tone}`}>{icon}</span><strong>{title}</strong><small>{subtitle}</small><footer><button><img src="https://cdn-icons-png.flaticon.com/512/126/126498.png"></img>  Copy link</button><button className="dots">⋮</button></footer></article>)}</div></section>;
+  const types = [[<img src="https://cdn-icons-png.flaticon.com/512/5346/5346453.png"></img>, "30 Min Consultation", "30 mins · One-on-One", "green"], [<img src="https://cdn-icons-png.flaticon.com/512/5346/5346453.png"></img>, "60 Min Strategy Call", "60 mins · One-on-One", "orange"], [<img src="https://cdn-icons-png.flaticon.com/512/482/482478.png " ></img>, "Quick Demo", "30 mins · Group", "blue"], [<img src="https://cdn-icons-png.flaticon.com/512/511/511587.png"></img>, "Interview Session", "45 mins · One-on-One", "pink"]];
+  return <section className="types-section">
+    <div className="section-title">
+      <h2>Your Meeting Types</h2>
+      <button>Manage all</button>
+    </div>
+    <div className="type-grid">
+      {types.map(([icon, title, subtitle, tone]) =>
+        <article className="type-card" key={title}>
+          <span className={`type-icon ${tone}`}>{icon}</span>
+          <strong>{title}</strong>
+          <small>{subtitle}</small>
+          <footer>
+            <button><img src="https://cdn-icons-png.flaticon.com/512/126/126498.png"></img>  Copy link</button><button className="dots">⋮</button>
+          </footer>
+        </article>)}
+    </div>
+  </section>;
 }
 
 function Dashboard() {
-  const { data: session, status } = useSession();     
+  const { data: session, status } = useSession();
   const [eventList, setEventList] = useState(meetings);
-  const [loadingEvents, setLoadingEvents] = useState(false);  
+  const [loadingEvents, setLoadingEvents] = useState(false);
   const [calendarError, setCalendarError] = useState("");
   const connected = status === "authenticated";
 
@@ -109,7 +125,7 @@ function Dashboard() {
       <header className="topbar">
         <label className="search">⌕ <input placeholder="Search meetings, contacts, etc..." /><kbd>⌘ K</kbd></label>
         <div className="header-actions"><button className="connect" onClick={() => connected ? signOut() : signIn("google")}>{connected ? "Disconnect Calendar" : "Connect Google Calendar"}</button>
-        <button className="bell"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529521.png"></img><b>3</b></button><span className="profile">{name[0]}<i /></span></div></header>
+          <button className="bell"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529521.png"></img><b>3</b></button><span className="profile">{name[0]}<i /></span></div></header>
       <div className="content-grid">
         <div className="center-content">
           <section className="welcome"><div><p>Good Morning,</p><h1>Welcome back! <span>👋</span></h1><small>You have <em>{todayEvents.length}</em> meetings today.</small></div><div className="city"><img src="/good-morning-city.png" alt="City skyline illustration" /></div></section>
