@@ -33,7 +33,8 @@ main { min-width:0; flex:1; padding:22px 34px 35px; overflow:hidden; }.topbar { 
 .city img { display:block; width:100%; height:auto; max-height:100%; object-fit:contain; object-position:right bottom; }
 .stat-icon img,.type-icon img { width:24px; height:24px; object-fit:contain; display:block; }
 .event-icon { overflow:hidden; }
-.event-icon img { width:100%; height:100%; object-fit:contain; display:block; }
+.event-icon img { width:80%; height:80%; object-fit:contain; display:block; }
+.calendar-message { margin:18px 0; color:#65706e; font-size:12px; }
 .bell img{ height: 30px;}
 .calendar-link{display: flex; align-items: center ;}
 .calendar-link img{height:20px}
